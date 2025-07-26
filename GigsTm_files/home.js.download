@@ -1,0 +1,412 @@
+(function () {
+  // VARIABLES
+  const timeline = document.querySelector(".timeline ol"),
+  elH = document.querySelectorAll(".timeline li > div"),
+  arrows = document.querySelectorAll(".timeline .arrows .arrow"),
+  arrowPrev = document.querySelector(".timeline .arrows .arrow__prev"),
+  arrowNext = document.querySelector(".timeline .arrows .arrow__next"),
+  firstItem = document.querySelector(".timeline li:first-child"),
+  lastItem = document.querySelector(".timeline li:last-child"),
+  xScrolling = 145,
+  disabledClass = "disabled";
+
+  // START
+  window.addEventListener("load", init);
+
+  function init() {
+    setEqualHeights(elH);
+    animateTl(xScrolling, arrows, timeline);
+    setSwipeFn(timeline, arrowPrev, arrowNext);
+    setKeyboardFn(arrowPrev, arrowNext);
+  }
+
+  // SET EQUAL HEIGHTS
+  function setEqualHeights(el) {
+    let counter = 0;
+    for (let i = 0; i < el.length; i++) {
+      const singleHeight = el[i].offsetHeight;
+
+      if (counter < singleHeight) {
+        counter = singleHeight;
+      }
+    }
+
+    for (let i = 0; i < el.length; i++) {
+      el[i].style.height = `${counter}px`;
+    }
+  }
+
+  function isElementInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (
+      window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth));
+
+  }
+
+  // SET STATE OF PREV/NEXT ARROWS
+  function setBtnState(el, flag = true) {
+    if (flag) {
+      el.classList.add(disabledClass);
+    } else {
+      if (el.classList.contains(disabledClass)) {
+        el.classList.remove(disabledClass);
+      }
+      el.disabled = false;
+    }
+  }
+
+  // ANIMATE TIMELINE
+  function animateTl(scrolling, el, tl) {
+    let counter = 0;
+    for (let i = 0; i < el.length; i++) {
+      el[i].addEventListener("click", function () {
+        if (!arrowPrev.disabled) {
+          arrowPrev.disabled = true;
+        }
+        if (!arrowNext.disabled) {
+          arrowNext.disabled = true;
+        }
+        const sign = this.classList.contains("arrow__prev") ? "" : "-";
+        if (counter === 0) {
+          tl.style.transform = `translateX(-${scrolling}px)`;
+        } else {
+          const tlStyle = getComputedStyle(tl);
+          // add more browser prefixes if needed here
+          const tlTransform =
+          tlStyle.getPropertyValue("-webkit-transform") ||
+          tlStyle.getPropertyValue("transform");
+          const values =
+          parseInt(tlTransform.split(",")[4]) +
+          parseInt(`${sign}${scrolling}`);
+          tl.style.transform = `translateX(${values}px)`;
+        }
+
+        setTimeout(() => {
+          isElementInViewport(firstItem) ?
+          setBtnState(arrowPrev) :
+          setBtnState(arrowPrev, false);
+          isElementInViewport(lastItem) ?
+          setBtnState(arrowNext) :
+          setBtnState(arrowNext, false);
+        }, 1100);
+
+        counter++;
+      });
+    }
+  }
+
+  // ADD SWIPE SUPPORT FOR TOUCH DEVICES
+  function setSwipeFn(tl, prev, next) {
+    const hammer = new Hammer(tl);
+    hammer.on("swipeleft", () => next.click());
+    hammer.on("swiperight", () => prev.click());
+  }
+
+  // ADD BASIC KEYBOARD FUNCTIONALITY
+  function setKeyboardFn(prev, next) {
+    document.addEventListener("keydown", e => {
+      if (e.which === 37 || e.which === 39) {
+        const timelineOfTop = timeline.offsetTop;
+        const y = window.pageYOffset;
+        if (timelineOfTop !== y) {
+          window.scrollTo(0, timelineOfTop);
+        }
+        if (e.which === 37) {
+          prev.click();
+        } else if (e.which === 39) {
+          next.click();
+        }
+      }
+    });
+  }
+})();
+
+		 
+		
+   setTimeout(function() {
+    $('#intro').typed({
+      strings: [
+        "Join India’s Fastest-Growing Gig Platform"
+      ],
+      typeSpeed: 20,
+      contentType: 'html'
+    });
+  }, 500);
+  
+      // Variables for mouse tracking
+      const cursor = document.getElementById("floating-cursor");
+      const jobTags = document.querySelectorAll(".job-tag");
+      let mouseX = 0,
+        mouseY = 0;
+      let cursorX = 0,
+        cursorY = 0;
+      let isDragging = false;
+      let lastMouseX = 0,
+        lastMouseY = 0;
+      let tagTimers = [];
+
+      // Time tracking for zig-zag motion
+      let startTime = Date.now();
+
+      // Define zig-zag properties
+      // Each tag will alternate between these positions in sequence
+      // Positive = right/down, Negative = left/up
+      const zigzagPattern = [
+        { x: -30, y: -30 }, // upper left
+        { x: 30, y: 30 }, // lower right
+        { x: -30, y: 30 }, // lower left
+        { x: 30, y: -30 }, // upper right
+      ];
+
+      // Speed at which tags move through the zigzag pattern
+      const tagSpeeds = [0.8, 1.0, 1.2, 0.9, 1.1, 0.7];
+
+      // Account for promotional banner height (if it exists)
+      const bannerElement = document.querySelector(".promo-banner");
+      const navbarElement = document.querySelector(".navbar");
+
+      const bannerHeight = bannerElement ? bannerElement.offsetHeight : 0;
+      const navbarHeight = navbarElement ? navbarElement.offsetHeight : 0;
+      const topOffset = bannerHeight + navbarHeight;
+
+      // Track mouse movement
+      document.addEventListener("mousemove", (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        // Check if dragging (mouse moved significantly)
+        const moveThreshold = 5;
+        if (
+          Math.abs(mouseX - lastMouseX) > moveThreshold ||
+          Math.abs(mouseY - lastMouseY) > moveThreshold
+        ) {
+          if (!isDragging) {
+            isDragging = true;
+            showTags();
+            // Reset the time tracking when starting to drag
+            startTime = Date.now();
+          }
+          // Reset the dragging timeout
+          resetDraggingTimeout();
+        }
+
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
+      });
+
+      // Update cursor position with smooth following
+      function updateCursor() {
+        const dx = mouseX - cursorX;
+        const dy = mouseY - cursorY;
+
+        cursorX += dx * 0.1;
+        cursorY += dy * 0.1;
+
+        cursor.style.left = `${cursorX}px`;
+        cursor.style.top = `${cursorY}px`;
+
+        // Update job tag positions to follow cursor in zig-zag pattern
+        updateJobTagPositions();
+
+        requestAnimationFrame(updateCursor);
+      }
+
+      // Update job tag positions relative to cursor with zig-zag motion
+      function updateJobTagPositions() {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+
+        jobTags.forEach((tag, index) => {
+          if (tag.classList.contains("active")) {
+            // Get the base offset from the data attributes
+            const baseOffsetX = parseInt(tag.getAttribute("data-offset-x"));
+            const baseOffsetY = parseInt(tag.getAttribute("data-offset-y"));
+
+            // Calculate movement progress for this tag
+            const tagSpeed = tagSpeeds[index % tagSpeeds.length];
+            const progress =
+              (elapsedTime * 0.001 * tagSpeed) % zigzagPattern.length;
+
+            // Determine which two pattern points we're between
+            const currentIndex = Math.floor(progress);
+            const nextIndex = (currentIndex + 1) % zigzagPattern.length;
+
+            // Calculate interpolation factor between the two points (0-1)
+            const fraction = progress - currentIndex;
+
+            // Get current and next zigzag positions
+            const currentPos = zigzagPattern[currentIndex];
+            const nextPos = zigzagPattern[nextIndex];
+
+            // Interpolate between current and next positions
+            const zigzagOffsetX =
+              currentPos.x + (nextPos.x - currentPos.x) * fraction;
+            const zigzagOffsetY =
+              currentPos.y + (nextPos.y - currentPos.y) * fraction;
+
+            // Apply the total offset
+            tag.style.left = `${cursorX + baseOffsetX + zigzagOffsetX}px`;
+            tag.style.top = `${cursorY + baseOffsetY + zigzagOffsetY}px`;
+          }
+        });
+      }
+
+      // Show all job tags with staggered timing
+      function showTags() {
+        // Clear any existing timers
+        tagTimers.forEach((timer) => clearTimeout(timer));
+        tagTimers = [];
+
+        // Show each tag with slight delay
+        jobTags.forEach((tag, index) => {
+          // Remove any fading class
+          tag.classList.remove("fading");
+
+          // Add active class with delay
+          setTimeout(() => {
+            tag.classList.add("active");
+            // Set initial position relative to cursor
+            const offsetX = parseInt(tag.getAttribute("data-offset-x"));
+            const offsetY = parseInt(tag.getAttribute("data-offset-y"));
+            tag.style.left = `${cursorX + offsetX}px`;
+            tag.style.top = `${cursorY + offsetY}px`;
+          }, index * 100);
+        });
+      }
+
+      // Hide all tags
+      function hideTags() {
+        isDragging = false;
+
+        jobTags.forEach((tag) => {
+          tag.classList.add("fading");
+          setTimeout(() => {
+            tag.classList.remove("active");
+            tag.classList.remove("fading");
+          }, 3000);
+        });
+      }
+
+      let draggingTimeout;
+
+      // Reset the dragging timeout
+      function resetDraggingTimeout() {
+        clearTimeout(draggingTimeout);
+        draggingTimeout = setTimeout(() => {
+          hideTags();
+        }, 2000); // Hide tags 2 seconds after dragging stops
+      }
+
+      // Adjust navbar position on page load and resize (if these elements exist)
+      function adjustNavbarPosition() {
+        if (bannerElement && navbarElement) {
+          const bannerHeight = bannerElement.offsetHeight;
+          navbarElement.style.marginTop = `${bannerHeight}px`;
+        }
+      }
+
+      window.addEventListener("resize", adjustNavbarPosition);
+
+      // Initialize
+      updateCursor();
+      adjustNavbarPosition();
+    
+   // Cards array and current index
+const cards = Array.from(document.querySelectorAll(".card"));
+let currentIndex = 0;
+
+// Set initial positions and classes
+function updateCards() {
+  cards.forEach((card, index) => {
+    // Reset all classes
+    card.classList.remove("active", "prev", "next");
+
+    // Set appropriate class based on index
+    if (index === currentIndex) {
+      card.classList.add("active");
+    } else if (
+      index ===
+      (currentIndex - 1 + cards.length) % cards.length
+    ) {
+      card.classList.add("prev");
+    } else if (index === (currentIndex + 1) % cards.length) {
+      card.classList.add("next");
+    }
+  });
+}
+
+// Simplified GSAP animation function
+function animateCardChange(direction) {
+  // Clear any ongoing animations
+  gsap.killTweensOf(cards);
+
+  // Update the current index
+  if (direction === "next") {
+    currentIndex = (currentIndex + 1) % cards.length;
+  } else {
+    currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+  }
+
+  // Apply new classes immediately
+  updateCards();
+}
+
+// Auto rotation
+function startAutoRotation() {
+  return setInterval(() => {
+    animateCardChange("next");
+  }, 3000); // Change slide every 3 seconds
+}
+
+// Initialize and start auto rotation
+updateCards();
+let autoRotation = startAutoRotation();
+
+// Click event for manual navigation (not shown in UI but ready for implementation)
+function nextCard() {
+  clearInterval(autoRotation);
+  animateCardChange("next");
+  autoRotation = startAutoRotation();
+}
+
+function prevCard() {
+  clearInterval(autoRotation);
+  animateCardChange("prev");
+  autoRotation = startAutoRotation();
+}
+
+// Touch events for mobile swiping
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener("touchstart", (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener("touchend", (e) => {
+  touchEndX = e.changedTouches[0].screenX;
+  handleSwipe();
+});
+
+function handleSwipe() {
+  const swipeThreshold = 50;
+  if (touchEndX < touchStartX - swipeThreshold) {
+    // Swipe left, go to next
+    nextCard();
+  } else if (touchEndX > touchStartX + swipeThreshold) {
+    // Swipe right, go to previous
+    prevCard();
+  }
+}
+
+// Tap to slide (on card tap, go to next)
+cards.forEach((card) => {
+  card.addEventListener("click", () => {
+    nextCard();
+  });
+});
+

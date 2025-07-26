@@ -1,0 +1,124 @@
+function toggleLoginRegister(isLogin = false, isRegister = false)
+{
+    if(isLogin)
+    {
+        $("#createaccount").modal('hide');
+        $("#login").modal('show');
+    }
+
+    if(isRegister)
+    {
+        $("#login").modal('hide');
+        $("#createaccount").modal('show');
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    //console.log("Livewire Loaded!");
+    Livewire.on("reloadPage", function () {
+        console.log("Reloading Page Now...");
+        window.location.reload();
+    });
+    
+});
+
+window.addEventListener('show-claim-modal', () => {
+    const modal = new bootstrap.Modal(document.getElementById('claimFormDataModal'));
+    modal.show();
+});
+
+window.addEventListener('success', event => {
+    $('html, body').animate({scrollTop:0}, '300');
+    Swal.fire({
+        title: event.detail[0].title,
+        text: event.detail[0].text,
+        icon: event.detail[0].icon,
+        confirmButtonText: 'OK'
+    }).then(function(result){
+        if (result.isConfirmed) {
+            if(event.detail[0].url){
+                document.location.href = event.detail[0].url;
+            }else{
+                location.reload(true);
+            }
+            
+        }
+    });
+});
+
+window.addEventListener('failed', event => {
+    Swal.fire({
+        title: event.detail[0].title,
+        text: event.detail[0].text,
+        icon: event.detail[0].icon,
+        confirmButtonText: 'OK'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if(event.detail[0].url){
+                document.location.href = event.detail[0].url;
+            }else{
+                location.reload(true);
+            }
+            
+        }
+    });
+});
+
+window.addEventListener('profile_not_complete', event => {
+    $("#createaccount").modal('hide');
+    $("#login").modal('hide');
+    Swal.fire({
+        title: event.detail[0].title,
+        text: event.detail[0].text,
+        icon: event.detail[0].icon,
+        confirmButtonText: 'OK'
+    }).then((result) => {
+        if (result.isConfirmed) { 
+            document.location.href = '/profile';
+        }
+    });
+});
+
+window.addEventListener('job-applied', event => {
+    Swal.fire({
+        title: event.detail[0].title,
+        text: event.detail[0].text,
+        icon: event.detail[0].icon,
+        confirmButtonText: 'OK'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.location.href = event.detail[0].url;
+        }
+    });
+});
+
+
+$(".toggle-password").click(function() {
+    $(this).toggleClass("fa-eye fa-eye-slash");
+    input = $(this).parent().find("input");
+    if (input.attr("type") == "password") {
+        input.attr("type", "text");
+    } else {
+        input.attr("type", "password");
+    }
+});
+
+
+//View Claim Data
+const viewClaimData = async(id) =>{
+    try{
+        const response = await axios('/api/view-claim-data/'+id);
+        const data = response.data;
+        if(data.status){
+            $("#claimFormDataDetail").html(data.selectedClaimData);
+            $("#claimFormDataModal").modal('show');
+        }
+    }catch(error){
+        Swal.fire({
+            title:'Error!',
+            text:error,
+            icon:'error'
+        });
+    }
+    
+};

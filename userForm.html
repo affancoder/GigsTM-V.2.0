@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigsTM - Profile Form</title>
+    <!-- Add favicon to prevent 404 error -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+    <link rel="stylesheet" href="userForm.css">
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">GigsTM Admin</div>
+            
+            <div class="contact-info">
+                <h3>Contact Info</h3>
+                
+                <div class="contact-detail">
+                    <label>E-mail</label>
+                    <span>admin@gmail.com</span>
+                </div>
+                
+                <div class="contact-detail">
+                    <label>Phone</label>
+                    <span>+917878787878</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <form>
+                <div class="form-grid">
+                    <!-- Name, Email, Mobile Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Your Name</label>
+                            <input type="text" id="name" placeholder="GigsTM Admin">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Your Email</label>
+                            <input type="email" id="email" placeholder="admin@gmail.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile">Your Mobile</label>
+                            <input type="text" id="mobile" placeholder="7878787878">
+                        </div>
+                    </div>
+
+                    <!-- Job Role Row -->
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label for="job-role">Job Role</label>
+                            <input type="text" id="job-role" placeholder="Enter job role">
+                        </div>
+                    </div>
+
+                    <!-- Gender, DOB, Profile Image Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender">
+                                <option>-- Select Gender --</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="dob">Your DOB</label>
+                            <input type="date" id="dob" class="date-input" placeholder="mm/dd/yyyy">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-image">Profile Image</label>
+                            <div class="file-input">
+                                <label for="profile-image-file" class="file-btn">Choose File</label>
+                                <input type="file" id="profile-image-file" accept="image/*">
+                                <span class="file-status">No file chosen</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aadhaar and Pan Card Row -->
+                    <div class="form-row double">
+                        <div class="form-group">
+                            <label for="aadhaar">Enter Aadhaar Card No.</label>
+                            <input type="text" id="aadhaar" placeholder="Enter aadhaar card no.">
+                        </div>
+                        <div class="form-group">
+                            <label for="pan">Enter Pan Card No.</label>
+                            <input type="text" id="pan" placeholder="Enter pan card no.">
+                        </div>
+                    </div>
+
+                    <!-- Upload Cards Row -->
+                    <div class="form-row double">
+                        <div class="form-group">
+                            <label for="aadhaar-upload">Upload Aadhaar Card</label>
+                            <div class="file-input">
+                                <label for="aadhaar-file" class="file-btn">Choose File</label>
+                                <input type="file" id="aadhaar-file">
+                                <span class="file-status">No file chosen</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pan-upload">Upload Pan Card</label>
+                            <div class="file-input">
+                                <label for="pan-file" class="file-btn">Choose File</label>
+                                <input type="file" id="pan-file">
+                                <span class="file-status">No file chosen</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Country, State, City Row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <select id="country">
+                                <option>-- Select Country --</option>
+                                <option value="india">India</option>
+                                <option value="usa">USA</option>
+                                <option value="uk">UK</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <select id="state">
+                                <option>-- Select State --</option>
+                                <option value="maharashtra">Maharashtra</option>
+                                <option value="gujarat">Gujarat</option>
+                                <option value="delhi">Delhi</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <select id="city">
+                                <option>Select City</option>
+                                <option value="mumbai">Mumbai</option>
+                                <option value="pune">Pune</option>
+                                <option value="delhi">Delhi</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Address Row -->
+                    <div class="form-row double">
+                        <div class="form-group">
+                            <label for="address1">Address Line 1</label>
+                            <input type="text" id="address1" placeholder="Address line 1">
+                        </div>
+                        <div class="form-group">
+                            <label for="address2">Address Line 2</label>
+                            <input type="text" id="address2" placeholder="Address line 2">
+                        </div>
+                    </div>
+
+                    <!-- Pincode Row -->
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" id="pincode" placeholder="Pincode" style="max-width: 300px;">
+                        </div>
+                    </div>
+
+                    <!-- Resume Upload Row -->
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label for="resume">Resume</label>
+                            <div class="file-input">
+                                <label for="resume-file" class="file-btn">Choose File</label>
+                                <input type="file" id="resume-file" accept=".pdf,.doc,.docx">
+                                <span class="file-status">No file chosen</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About Section -->
+                    <div class="form-row single">
+                        <div class="form-group">
+                            <label for="about">About</label>
+                            <textarea id="about" placeholder="Type your message"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auth Status and Controls -->
+                <div class="form-footer">
+                    <div id="auth-status" style="margin-bottom: 1rem; font-weight: 500;">Not signed in</div>
+                    <div id="message-container"></div>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button type="button" id="sign-out-btn" class="btn btn-secondary" style="display: none;" onclick="signOut()">
+                            Sign Out
+                        </button>
+                        <button type="submit" id="submit-btn" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSzL3kP_1jKuYzn4YgZNKsKizsl7fUXjE",
+            authDomain: "gigstm-12345.firebaseapp.com",
+            projectId: "gigstm-12345",
+            storageBucket: "gigstm-12345.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abc123def456"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Function to show messages
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.innerHTML = `<div class="message ${type}">${message}</div>`;
+            messageContainer.style.display = 'block';
+            setTimeout(() => {
+                messageContainer.style.display = 'none';
+            }, 5000);
+        }
+
+        // Firebase Auth State Listener
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                console.log('User is signed in:', user);
+                document.getElementById('auth-status').textContent = `Signed in as: ${user.email}`;
+                document.getElementById('sign-out-btn').style.display = 'inline-block';
+            } else {
+                // User is signed out
+                console.log('User is signed out');
+                document.getElementById('auth-status').textContent = 'Not signed in';
+                document.getElementById('sign-out-btn').style.display = 'none';
+                // Redirect to login page or show login form
+            }
+        });
+
+        // Sign up function
+        function signUp(email, password) {
+            return firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // User signed up successfully
+                    return userCredential.user;
+                })
+                .catch((error) => {
+                    console.error('Error signing up:', error);
+                    throw error;
+                });
+        }
+
+        // Sign in function
+        function signIn(email, password) {
+            return firebase.auth().signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // User signed in successfully
+                    return userCredential.user;
+                })
+                .catch((error) => {
+                    console.error('Error signing in:', error);
+                    throw error;
+                });
+        }
+
+        // Sign out function
+        function signOut() {
+            return firebase.auth().signOut()
+                .then(() => {
+                    console.log('User signed out');
+                })
+                .catch((error) => {
+                    console.error('Error signing out:', error);
+                });
+        }
+
+        // Form submission handler
+        document.querySelector("form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            
+            // Check if user is authenticated
+            const user = firebase.auth().currentUser;
+            if (!user) {
+                showMessage("Please sign in to submit the form", "error");
+                submitBtn.disabled = false;
+                return;
+            }
+            submitBtn.textContent = 'Submitting...';
+
+            // Add user UID to the form data for backend reference
+            const userIdToken = await user.getIdToken();
+            
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('userId', user.uid);
+            formData.append('mobile', document.getElementById("mobile").value);
+            formData.append('jobRole', document.getElementById("job-role").value);
+            formData.append('gender', document.getElementById("gender").value);
+            formData.append('dob', document.getElementById("dob").value);
+            formData.append('aadhaar', document.getElementById("aadhaar").value);
+            formData.append('pan', document.getElementById("pan").value);
+            formData.append('country', document.getElementById("country").value);
+            formData.append('state', document.getElementById("state").value);
+            formData.append('city', document.getElementById("city").value);
+            formData.append('address1', document.getElementById("address1").value);
+            formData.append('address2', document.getElementById("address2").value);
+            formData.append('pincode', document.getElementById("pincode").value);
+            formData.append('about', document.getElementById("about").value);
+
+            // Add file uploads
+            const profileImage = document.getElementById("profile-image-file").files[0];
+            const aadhaarFile = document.getElementById("aadhaar-file").files[0];
+            const panFile = document.getElementById("pan-file").files[0];
+            const resumeFile = document.getElementById("resume-file").files[0];
+
+            if (profileImage) formData.append('profileImage', profileImage);
+            if (aadhaarFile) formData.append('aadhaarFile', aadhaarFile);
+            if (panFile) formData.append('panFile', panFile);
+            if (resumeFile) formData.append('resumeFile', resumeFile);
+
+            // Add the Firebase ID token to the headers
+            const headers = {
+                'Authorization': `Bearer ${userIdToken}`
+            };
+
+            // First, send an OPTIONS request for CORS preflight
+            fetch('https://script.google.com/macros/s/AKfycbyCezQXa3lCQ4GEiCfS20TU5Vs13Y_ExWknpyTpPg_yuMyTBBXjlrzfWLo6QAQNfnal/exec', {
+                method: 'OPTIONS',
+                headers: {
+                    'Access-Control-Request-Method': 'POST',
+                    'Access-Control-Request-Headers': 'content-type',
+                },
+                mode: 'cors'
+            })
+            .then(() => {
+                // Then send the actual POST request
+                return fetch('https://script.google.com/macros/s/AKfycbyCezQXa3lCQ4GEiCfS20TU5Vs13Y_ExWknpyTpPg_yuMyTBBXjlrzfWLo6QAQNfnal/exec', {
+                    method: 'POST',
+                    headers: headers,
+                    body: formData
+                });
+            })
+            .then(response => {
+                console.log('Form submission successful');
+                showMessage("Form submitted successfully! Thank you for your submission.", "success");
+                document.querySelector("form").reset();
+                // Reset file status texts
+                document.querySelectorAll('.file-status').forEach(status => {
+                    status.textContent = 'No file chosen';
+                });
+                
+                // Optional: Redirect to a thank you page or show additional message
+                // window.location.href = 'thank-you.html';
+            })
+            .catch((error) => {
+                console.error('Error details:', {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                });
+                showMessage(`Error: ${error.message || 'Failed to submit form. Please check console for details.'}`, "error");
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit';
+            });
+        });
+
+        // Handle file input interactions
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const fileStatus = this.parentElement.querySelector('.file-status');
+                if (this.files.length > 0) {
+                    fileStatus.textContent = this.files[0].name;
+                } else {
+                    fileStatus.textContent = 'No file chosen';
+                }
+            });
+        });
+
+        // Handle date input placeholder
+        const dateInput = document.getElementById('dob');
+        dateInput.addEventListener('focus', function() {
+            this.type = 'date';
+        });
+        dateInput.addEventListener('blur', function() {
+            if (!this.value) {
+                this.type = 'text';
+            }
+        });
+    </script>
+</body>
+</html>
