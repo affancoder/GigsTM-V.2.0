@@ -192,12 +192,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-**Affan** - [affan@example.com](mailto:affan@example.com)
+**MD Affan Asghar** - [affanasgar8@gmail.com](mailto:affanasgar8@gmail.com)
 
-Project Link: [https://github.com/your-username/gigstm](https://github.com/your-username/gigstm)
+Project Link: [https://github.com/affancoder/gigstm-v2](https://github.com/affancoder/gigstm-v2)
 
 ---
 
 <div align="center">
-  Made with ❤️ by Affan | © 2025 GigsTM. All rights reserved.
+  Made with ❤️ by Developer Affan | © 2025 GigsTM. All rights reserved.
 </div>
