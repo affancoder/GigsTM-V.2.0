@@ -20,6 +20,39 @@
         }
         .auth-form .form-group {
             margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        /* Style for phone number input */
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        input[type="tel"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
+        
+        /* Style for full name input */
+        input[type="text"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            outline: none;
         }
         .auth-form label {
             display: block;
@@ -27,12 +60,18 @@
             color: #333;
             font-weight: 500;
         }
-        .auth-form input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Style for required field indicators */
+        .required {
+            color: #ef4444;
+            font-size: 0.9em;
+            margin-left: 2px;
         }
         .auth-form button {
             width: 100%;
@@ -110,8 +149,16 @@
         <div id="signup-form" class="auth-form" style="display: none;">
             <div id="signup-message" class="auth-message"></div>
             <div class="form-group">
-                <label for="signup-email">Email</label>
-                <input type="email" id="signup-email" placeholder="Enter your email">
+                <label for="full-name">Full Name <span class="required">*</span></label>
+                <input type="text" id="full-name" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="phone-number">Phone Number <span class="required">*</span></label>
+                <input type="tel" id="phone-number" placeholder="Enter your phone number" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-email">Email <span class="required">*</span></label>
+                <input type="email" id="signup-email" placeholder="Enter your email" required>
             </div>
             <div class="form-group">
                 <label for="signup-password">Password</label>
@@ -184,12 +231,22 @@
 
         // Handle sign up
         async function handleSignUp() {
-            const email = document.getElementById('signup-email').value;
+            const fullName = document.getElementById('full-name').value.trim();
+            const phoneNumber = document.getElementById('phone-number').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
             
-            if (!email || !password || !confirmPassword) {
-                showMessage('signup-message', 'Please fill in all fields', 'error');
+            // Validate required fields
+            if (!fullName || !phoneNumber || !email || !password || !confirmPassword) {
+                showMessage('signup-message', 'Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Validate phone number format (basic validation)
+            const phoneRegex = /^[0-9]{10,15}$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                showMessage('signup-message', 'Please enter a valid phone number', 'error');
                 return;
             }
             
@@ -204,7 +261,18 @@
             }
             
             try {
-                await firebase.auth().createUserWithEmailAndPassword(email, password);
+                const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+                
+                // Save additional user data to Firestore
+                await firebase.firestore().collection('users').doc(userCredential.user.uid).set({
+                    fullName: fullName,
+                    phoneNumber: phoneNumber,
+                    email: email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // User created successfully
                 showMessage('signup-message', 'Account created successfully! Redirecting...', 'success');
                 // Redirect to form page after a short delay
                 setTimeout(() => {

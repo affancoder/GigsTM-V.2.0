@@ -3,37 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GigsTM - Profile Form</title>
-    <link rel="stylesheet" href="userform.css">
+    <title>User Form - GigsTM</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Add favicon to prevent 404 error -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
-    <!-- Firebase App (the core Firebase SDK) -->
+    <link rel="stylesheet" href="userform.css">
+    <link rel="shortcut icon" href="https://gigstm.com/images/logo/favicon.ico" type="image/x-icon">
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <!-- Firebase Authentication -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="sidebar">
-            <div class="logo">GigsTM Admin</div>
+            <div class="logo"><a href="index.html"><img src="/GigsTm_files/lgo_project1.png" alt="GigsTM" width="auto" height="50"></a></div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <img id="user-photo" src="https://ui-avatars.com/api/?name=User&background=random" alt="User Avatar">
+                </div>
+                <h3 class="user-name" id="user-display-name">Welcome Back!</h3>
+            </div>
             
             <div class="contact-info">
-                <h3>Contact Info</h3>
+                <h3>Account Details</h3>
                 
                 <div class="contact-detail">
-                    <label>E-mail</label>
-                    <span>admin@gmail.com</span>
+                    <label><i class="fas fa-envelope"></i> Email Address</label>
+                    <span id="user-email" class="user-email">Loading...</span>
+                    <!-- <p class="user-email" id="user-email"><div id="auth-status" style="margin-bottom: 1rem; font-weight: 500;">Not signed in</div></p> -->
                 </div>
                 
                 <div class="contact-detail">
-                    <label>Phone</label>
-                    <span>+917878787878</span>
+                    <label><i class="fas fa-phone"></i> Phone Number</label>
+                    <span id="user-phone">Not provided</span>
                 </div>
+                
             </div>
         </div>
 
         <div class="main-content">
-            <form>
+            <form id="profile-form">
                 <div class="form-grid">
                     <!-- Name, Email, Mobile Row -->
                     <div class="form-row">
@@ -77,8 +90,10 @@
                         <div class="form-group">
                             <label for="profile-image">Profile Image</label>
                             <div class="file-input">
-                                <label for="profile-image-file" class="file-btn">Choose File</label>
-                                <input type="file" id="profile-image-file" accept="image/*">
+                                <input type="file" id="profile-image" name="profile-image" accept="image/*" style="display: none;">
+                                <button type="button" class="file-btn" onclick="document.getElementById('profile-image').click()">
+                                    <i class="fas fa-upload"></i> Choose File
+                                </button>
                                 <span class="file-status">No file chosen</span>
                             </div>
                         </div>
@@ -190,13 +205,15 @@
 
                 <!-- Auth Status and Controls -->
                 <div class="form-footer">
-                    <div id="auth-status" style="margin-bottom: 1rem; font-weight: 500;">Not signed in</div>
+                    <div id="auth-status">Not signed in</div>
                     <div id="message-container"></div>
-                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                        <button type="button" id="sign-out-btn" class="btn btn-secondary" style="display: none;" onclick="signOut()">
-                            Sign Out
+                    <div>
+                        <button type="button" id="form-sign-out-btn" class="btn btn-secondary" onclick="signOutUser()">
+                            <i class="fas fa-sign-out-alt"></i> Sign Out
                         </button>
-                        <button type="submit" id="submit-btn" class="btn btn-primary">Submit</button>
+                        <button type="submit" id="submit-btn" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
                     </div>
                 </div>
             </form>
@@ -205,8 +222,8 @@
 
 
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
+        // Firebase configuration - must be defined before userForm.js
+        window.firebaseConfig = {
             apiKey: "AIzaSyDSzL3kP_1jKuYzn4YgZNKsKizsl7fUXjE",
             authDomain: "gigstm-12345.firebaseapp.com",
             projectId: "gigstm-12345",
@@ -401,5 +418,6 @@
             }
         });
     </script>
+    <script src="userForm.js"></script>
 </body>
 </html>
