@@ -194,7 +194,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **MD Affan Asghar** - [affanasgar8@gmail.com](mailto:affanasgar8@gmail.com)
 
-Project Link: [https://github.com/affancoder/gigstm-v2](https://github.com/affancoder/gigstm-v2)
+Project Link: ([https://github.com/affancoder/gigstm-v2](https://gigstm-v2.vercel.app/))
 
 ---
 
